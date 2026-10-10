@@ -79,6 +79,50 @@ if uploaded_fir is not None:
                 page.get_text() for page in pdf_document
             )
             st.text_area("Extracted FIR Text", fir_text, height=250)
+            
+            st.subheader("🔎 Automatically Extracted FIR Details")
+
+            import re
+
+            def extract_field(pattern, text):
+                match = re.search(pattern, text, re.IGNORECASE)
+                return match.group(1).strip() if match else "Not found"
+
+            fir_number = extract_field(
+                r"(?:Demo FIR Number|FIR Number)\s*:\s*([^\n]+)",
+                fir_text
+            )
+
+            incident_date = extract_field(
+                r"Incident date\s*:\s*([^\n]+)",
+                fir_text
+            )
+
+            location = extract_field(
+                r"Location\s*:\s*([^\n]+)",
+                fir_text
+            )
+
+            complainant = extract_field(
+                r"Name\s*\n(?:Demonstration value\s*\n)?([^\n]+)",
+                fir_text
+            )
+
+            vehicle = extract_field(
+                r"Vehicle type\s*\n(?:Demonstration value\s*\n)?([^\n]+)",
+                fir_text
+            )
+
+            st.write("**FIR Number:**", fir_number)
+            st.write("**Incident Date:**", incident_date)
+            st.write("**Location:**", location)
+            st.write("**Complainant:**", complainant)
+            st.write("**Vehicle:**", vehicle)
+
+            st.warning(
+                "Please verify extracted information against the original document."
+            )
+            
 
             if not fir_text.strip():
                 st.warning(
