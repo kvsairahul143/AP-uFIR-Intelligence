@@ -52,6 +52,46 @@ df = load_data()
 # ---------------------------------------------------------
 
 st.title("🔎 AP u-FIR Intelligence")
+
+st.subheader("📄 Upload and Analyze FIR")
+
+uploaded_fir = st.file_uploader(
+    "Upload a sample FIR document",
+    type=["pdf", "txt"],
+    help="Upload a fictional or authorized FIR for demonstration."
+)
+
+if uploaded_fir is not None:
+    st.success(f"Uploaded: {uploaded_fir.name}")
+
+    if uploaded_fir.name.lower().endswith(".txt"):
+        fir_text = uploaded_fir.getvalue().decode("utf-8", errors="replace")
+        st.text_area("FIR Document Text", fir_text, height=250)
+
+    elif uploaded_fir.name.lower().endswith(".pdf"):
+        try:
+            import pymupdf
+            pdf_document = pymupdf.open(
+                stream=uploaded_fir.getvalue(),
+                filetype="pdf"
+            )
+            fir_text = "\n".join(
+                page.get_text() for page in pdf_document
+            )
+            st.text_area("Extracted FIR Text", fir_text, height=250)
+
+            if not fir_text.strip():
+                st.warning(
+                    "No selectable text found. This PDF may be scanned "
+                    "and require OCR."
+                )
+        except ImportError:
+            st.warning(
+                "PDF reading package is missing. Add pymupdf to "
+                "requirements.txt and redeploy."
+            )
+        except Exception as e:
+            st.error(f"Could not read PDF: {e}")
 st.caption(
     "AI-Enabled Unified First Information Report "
     "(u-FIR) Prototype | Bhashini Hackathon"
