@@ -17,7 +17,7 @@ st.set_page_config(
 # FILE LOCATION
 # ---------------------------------------------------------
 
-EXCEL_FILE = Path("data/excel/synthetic_ufir_cases.xlsx")
+EXCEL_FILE = Path("synthetic_ufir_cases.xlsx")
 
 
 # ---------------------------------------------------------
